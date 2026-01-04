@@ -502,7 +502,7 @@ class Viterbox:
         if device == "mps":
             s3gen.load_state_dict(torch.load(ckpt_dir / "s3gen.pt", map_location='cpu',weights_only=True))
         else:
-            s3gen.load_state_dict(torch.load(ckpt_dir / "s3gen.pt", weights_only=True))
+            s3gen.load_state_dict(torch.load(ckpt_dir / "s3gen.pt", weights_only=True, map_location=device))
         s3gen.to(device).eval()
         
         # Load tokenizer

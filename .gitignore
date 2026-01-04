@@ -44,3 +44,7 @@ outputs/
 # MacOS
 *.DS_Store
 pretrained/
+
+video/
+temp_audio/
+temp/

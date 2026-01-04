@@ -72,7 +72,8 @@ Model được fine-tune trên **3000+ giờ** dữ liệu tiếng Việt chất
 # Clone repo
 git clone https://github.com/iamdinhthuan/viterbox-tts.git
 cd viterbox
-
+#cuda install 
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 # Tạo virtual environment (khuyến nghị)
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
