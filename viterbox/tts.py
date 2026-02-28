@@ -574,16 +574,17 @@ class Viterbox:
         temperature: float,
         top_p: float,
         repetition_penalty: float,
+        max_new_tokens: int = 1000,
     ) -> np.ndarray:
         # Normalize and ensure text ends with punctuation (crucial for T3)
         text = punc_norm(text)
-            
+
         # Tokenize text with language prefix
         text_tokens = self.tokenizer.text_to_tokens(text, language_id=language).to(self.device)
-        
+
         # Duplicate for CFG (classifier-free guidance needs two sequences)
         text_tokens = torch.cat([text_tokens, text_tokens], dim=0)
-        
+
         # Add start and stop tokens
         sot = self.t3.hp.start_text_token
         eot = self.t3.hp.stop_text_token
@@ -599,7 +600,7 @@ class Viterbox:
             speech_tokens = self.t3.inference(
                 t3_cond=self.conds.t3,
                 text_tokens=text_tokens,
-                max_new_tokens=1000,
+                max_new_tokens=max_new_tokens,
                 temperature=temperature,
                 cfg_weight=cfg_weight,
                 repetition_penalty=repetition_penalty,
@@ -633,7 +634,7 @@ class Viterbox:
         exaggeration: float = 0.5,
         cfg_weight: float = 0.5,
         temperature: float = 0.8,
-
+        max_new_tokens: int = 1000,
         top_p: float = 1.0,
         repetition_penalty: float = 2.0,
         split_sentences: bool = True,
@@ -650,6 +651,7 @@ class Viterbox:
             exaggeration: Expression intensity (0.0 - 2.0)
             cfg_weight: Classifier-free guidance weight (0.0 - 1.0)
             temperature: Sampling temperature (0.1 - 1.0)
+            max_new_tokens: Max tokens to generate (lower = faster, default 1000)
             top_p: Top-p sampling parameter
             repetition_penalty: Repetition penalty for T3
             split_sentences: Whether to split text by punctuation and generate separately
@@ -695,6 +697,7 @@ class Viterbox:
                     temperature=temperature,
                     top_p=top_p,
                     repetition_penalty=repetition_penalty,
+                    max_new_tokens=max_new_tokens,
                 )
                 
                 # Trim silence using VAD (more precise endpointing)
@@ -729,6 +732,7 @@ class Viterbox:
                 temperature=temperature,
                 top_p=top_p,
                 repetition_penalty=repetition_penalty,
+                max_new_tokens=max_new_tokens,
             )
             return torch.from_numpy(audio_np).unsqueeze(0)
     
